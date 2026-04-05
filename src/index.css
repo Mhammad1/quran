@@ -44,4 +44,4 @@ html {
 /* Fonts are loaded lazily via JS FontFace API in usePageData — not listed here
    to avoid blocking page load with 48 font declarations.
    The QBSML header font is the only one we preload since it's used on every page. */
-@font-face { font-family: "QCF4_QBSML"; src: url("/fonts/qcf4/QCF4_QBSML.woff2") format("woff2"); font-display: block; }
+/* QCF4_QBSML is loaded via FontFace API in usePageData.ts (base-path safe) */

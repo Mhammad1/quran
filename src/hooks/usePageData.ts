@@ -7,11 +7,15 @@ const qcf4Cache = new Map<number, QCF4Page>();
 // Track which fonts are already loaded/loading
 const loadedFonts = new Set<string>();
 
+// Load the header font eagerly — used on every page
+loadFont('QCF4_QBSML');
+
 async function loadFont(fontName: string): Promise<void> {
   if (loadedFonts.has(fontName)) return;
   loadedFonts.add(fontName);
-  const num = fontName.replace('QCF4_Hafs_', '');
-  const url = `/fonts/qcf4/QCF4_Hafs_${num}_W.woff2`;
+  const url = fontName === 'QCF4_QBSML'
+    ? `${import.meta.env.BASE_URL}fonts/qcf4/QCF4_QBSML.woff2`
+    : `${import.meta.env.BASE_URL}fonts/qcf4/QCF4_Hafs_${fontName.replace('QCF4_Hafs_', '')}_W.woff2`;
   try {
     const face = new FontFace(fontName, `url(${url}) format('woff2')`);
     const loaded = await face.load();
@@ -25,7 +29,7 @@ async function fetchQCF4Page(pageNum: number): Promise<QCF4Page | null> {
   if (qcf4Cache.has(pageNum)) return qcf4Cache.get(pageNum)!;
   const num = String(pageNum).padStart(3, '0');
   try {
-    const res = await fetch(`/qcf4-pages/${num}.json`);
+    const res = await fetch(`${import.meta.env.BASE_URL}qcf4-pages/${num}.json`);
     if (!res.ok) return null;
     const data: QCF4Page = await res.json();
     // Evict oldest entry if cache is too large
