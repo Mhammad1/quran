@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@theme {
+  --font-quran: 'Scheherazade New', 'Amiri Quran', serif;
+  --leading-quran: 2.0;
+  /* Mobile: single page full-width → larger font */
+  --quran-font-size: clamp(1.05rem, 3.5vw, 1.5rem);
+}
+
+@media (min-width: 768px) {
+  :root {
+    /* Desktop: two pages side-by-side → smaller font */
+    --quran-font-size: clamp(0.9rem, 1.75vw, 1.35rem);
+  }
+}
+
+/* Arabic text global adjustments */
+[lang="ar"] {
+  font-family: var(--font-quran);
+  line-height: var(--leading-quran);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d6d3d1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a29e;
+}
+
+/* ── QCF4 King Fahd Complex Fonts (Hafs Madinah Mushaf 1441 AH) ── */
+/* Fonts are loaded lazily via JS FontFace API in usePageData — not listed here
+   to avoid blocking page load with 48 font declarations.
+   The QBSML header font is the only one we preload since it's used on every page. */
+@font-face { font-family: "QCF4_QBSML"; src: url("/fonts/qcf4/QCF4_QBSML.woff2") format("woff2"); font-display: block; }
