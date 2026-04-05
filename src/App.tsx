@@ -5,7 +5,7 @@ import SpecialPage from './pages/SpecialPage';
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/quran">
       <Routes>
         <Route element={<AppLayout />}>
           <Route index element={<Navigate to="/page/1" replace />} />
