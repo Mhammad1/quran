@@ -3,7 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Quran Memorization</title>
+    <title>القرآن</title>
+    <script>
+      // GitHub Pages SPA: restore path from query param set by 404.html
+      (function() {
+        var p = window.location.search.slice(1).split('&')[0];
+        if (p && p.startsWith('p=')) {
+          var path = decodeURIComponent(p.slice(2));
+          window.history.replaceState(null, null, '/' + path);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
