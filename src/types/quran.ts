@@ -27,7 +27,7 @@ export interface SpecialAya {
   addedAt: number;     // Date.now()
 }
 
-export type SortOrder = 'random' | 'asc' | 'desc';
+export type SortOrder = 'random' | 'asc' | 'desc' | 'recent';
 
 /** One word (or aya-end marker) entry inside a Mushaf page line */
 export interface PageWordEntry {

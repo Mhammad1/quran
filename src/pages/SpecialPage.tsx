@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useMemo, useEffect } from 'react';
 import { useSpecialAyatStore } from '../store/specialAyatStore';
 import { getAllSurahs } from '../utils/quranIndex';
 import { useQuranData } from '../hooks/useQuranData';
@@ -9,11 +9,11 @@ import EmptyState from '../components/special/EmptyState';
 import type { SortOrder, Surah } from '../types/quran';
 
 export default function SpecialPage() {
-  const { items, removeSpecial, updateNote } = useSpecialAyatStore();
+  const { items, removeSpecial, updateNote, filterSurah, filterSort, filterShuffleSeed, setFilter, reshuffleFilter } = useSpecialAyatStore();
   const { ready } = useQuranData();
-  const [selectedSurah, setSelectedSurah] = useState<number | null>(null);
-  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
-  const [shuffleSeed, setShuffleSeed] = useState(0);
+  const selectedSurah = filterSurah;
+  const sortOrder = filterSort;
+  const shuffleSeed = filterShuffleSeed;
 
   useEffect(() => {
     document.title = 'الآيات المحفوظة — القرآن';
@@ -38,6 +38,8 @@ export default function SpecialPage() {
       list = [...list].sort((a, b) => a.globalAyah - b.globalAyah);
     } else if (sortOrder === 'desc') {
       list = [...list].sort((a, b) => b.globalAyah - a.globalAyah);
+    } else if (sortOrder === 'recent') {
+      list = [...list].sort((a, b) => b.addedAt - a.addedAt);
     } else {
       list = [...list].sort(() => {
         return shuffleSeed % 2 === 0 ? 0.5 - Math.random() : Math.random() - 0.5;
@@ -48,8 +50,8 @@ export default function SpecialPage() {
   }, [items, selectedSurah, sortOrder, shuffleSeed]);
 
   const handleSortChange = (order: SortOrder) => {
-    setSortOrder(order);
-    if (order === 'random') setShuffleSeed((s) => s + 1);
+    setFilter(selectedSurah, order);
+    if (order === 'random') reshuffleFilter();
   };
 
   if (!ready) {
@@ -75,7 +77,7 @@ export default function SpecialPage() {
         </div>
         {sortOrder === 'random' && !isEmpty && (
           <button
-            onClick={() => setShuffleSeed((s) => s + 1)}
+            onClick={() => reshuffleFilter()}
             className="px-4 py-2 text-sm bg-amber-50 border border-amber-200 text-amber-700 rounded-lg hover:bg-amber-100 transition-colors"
           >
             ⇄ ترتيب عشوائي
@@ -91,7 +93,7 @@ export default function SpecialPage() {
             surahs={allSurahs}
             selectedSurah={selectedSurah}
             sortOrder={sortOrder}
-            onSurahChange={setSelectedSurah}
+            onSurahChange={(s) => setFilter(s, sortOrder)}
             onSortChange={handleSortChange}
           />
 

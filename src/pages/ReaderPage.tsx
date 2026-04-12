@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuranData } from '../hooks/useQuranData';
 import { usePageData } from '../hooks/usePageData';
@@ -44,6 +44,25 @@ export default function ReaderPage() {
     return () => document.removeEventListener('keydown', handleKey);
   }, [handleKey]);
 
+  // Swipe navigation (mobile only)
+  const swipeStart = useRef<{ x: number; y: number } | null>(null);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    const t = e.touches[0];
+    swipeStart.current = { x: t.clientX, y: t.clientY };
+  }, []);
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (!swipeStart.current) return;
+    const dx = swipeStart.current.x - e.changedTouches[0].clientX;
+    const dy = Math.abs(swipeStart.current.y - e.changedTouches[0].clientY);
+    swipeStart.current = null;
+    // Only horizontal swipes wider than 50px and not mostly vertical
+    if (Math.abs(dx) < 50 || dy > Math.abs(dx) * 0.8) return;
+    if (dx > 0 && parsed + 1 <= TOTAL_PAGES) navigate(`/page/${parsed + 1}`);
+    else if (dx < 0 && parsed - 1 >= 1) navigate(`/page/${parsed - 1}`);
+  }, [parsed, navigate]);
+
   if (!ready) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
@@ -58,7 +77,11 @@ export default function ReaderPage() {
   }
 
   return (
-    <div className="max-w-[420px] md:max-w-[780px] mx-auto px-2 pb-6">
+    <div
+      className="max-w-[420px] md:max-w-[780px] mx-auto px-2 pb-6"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       <PageNavigation currentPage={rightPage} navPage={parsed} step={2} endPage={leftPage} />
 
       {/* Spread layout:

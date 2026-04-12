@@ -1,10 +1,16 @@
 import { create } from 'zustand';
-import type { Aya, SpecialAya } from '../types/quran';
+import type { Aya, SpecialAya, SortOrder } from '../types/quran';
 import { loadSpecialAyat, saveSpecialAyat } from '../utils/localStorage';
 
 interface SpecialAyatState {
   items: Record<string, SpecialAya>;
   lastPage: number;
+  // Filter state — persists across navigation
+  filterSurah: number | null;
+  filterSort: SortOrder;
+  filterShuffleSeed: number;
+  setFilter: (surah: number | null, sort: SortOrder) => void;
+  reshuffleFilter: () => void;
   addSpecial: (aya: Aya) => void;
   removeSpecial: (id: string) => void;
   updateNote: (id: string, note: string) => void;
@@ -16,6 +22,12 @@ interface SpecialAyatState {
 export const useSpecialAyatStore = create<SpecialAyatState>((set, get) => ({
   items: loadSpecialAyat(),
   lastPage: parseInt(localStorage.getItem('quran_last_page') || '1', 10),
+  filterSurah: null,
+  filterSort: 'recent',
+  filterShuffleSeed: 0,
+
+  setFilter: (surah, sort) => set({ filterSurah: surah, filterSort: sort }),
+  reshuffleFilter: () => set((s) => ({ filterShuffleSeed: s.filterShuffleSeed + 1 })),
 
   addSpecial: (aya) => {
     const id = `${aya.surah}:${aya.ayah}`;

@@ -41,6 +41,7 @@ export default function SpecialFilters({
         <div className="flex rounded-lg border border-stone-200 overflow-hidden">
           {(
             [
+              { value: 'recent', label: '🕐 حديثاً' },
               { value: 'asc', label: '↑ تصاعدي' },
               { value: 'desc', label: '↓ تنازلي' },
               { value: 'random', label: '⇄ عشوائي' },
