@@ -118,6 +118,10 @@ export default function ReaderPage() {
       </div>
 
       <PageNavigation currentPage={rightPage} navPage={parsed} step={2} endPage={leftPage} />
+
+      <div className="text-center text-xs text-stone-400 pt-3 select-none">
+        v{__APP_VERSION__}
+      </div>
     </div>
   );
 }

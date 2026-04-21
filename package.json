@@ -1,7 +1,7 @@
 {
   "name": "quran-memorization",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "homepage": "https://Mhammad1.github.io/quran",
   "scripts": {
@@ -9,7 +9,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "fetch-data": "node scripts/fetch-quran-data.mjs",
-    "deploy": "npm run build && gh-pages -d dist"
+    "deploy": "npm version patch --no-git-tag-version && npm run build && gh-pages -d dist"
   },
   "dependencies": {
     "@fontsource/amiri-quran": "^5.0.0",
