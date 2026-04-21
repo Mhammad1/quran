@@ -41,12 +41,18 @@ export default function SpecialPage() {
     } else if (sortOrder === 'recent') {
       list = [...list].sort((a, b) => b.addedAt - a.addedAt);
     } else {
-      list = [...list].sort(() => {
-        return shuffleSeed % 2 === 0 ? 0.5 - Math.random() : Math.random() - 0.5;
-      });
+      // Deterministic shuffle: stable for a given (id + seed), so order is preserved
+      // across route navigation and re-renders. Only changes when user reshuffles.
+      const keyFor = (id: string) => {
+        let h = shuffleSeed | 0;
+        for (let i = 0; i < id.length; i++) {
+          h = (h * 31 + id.charCodeAt(i)) | 0;
+        }
+        return h;
+      };
+      list = [...list].sort((a, b) => keyFor(a.id) - keyFor(b.id));
     }
     return list;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items, selectedSurah, sortOrder, shuffleSeed]);
 
   const handleSortChange = (order: SortOrder) => {
