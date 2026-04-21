@@ -41,14 +41,17 @@ export default function SpecialPage() {
     } else if (sortOrder === 'recent') {
       list = [...list].sort((a, b) => b.addedAt - a.addedAt);
     } else {
-      // Deterministic shuffle: stable for a given (id + seed), so order is preserved
-      // across route navigation and re-renders. Only changes when user reshuffles.
+      // Deterministic shuffle using a proper mix function. Stable for a given
+      // (id + seed) so order is preserved across renders/navigation. Different
+      // seeds produce completely different orderings.
       const keyFor = (id: string) => {
-        let h = shuffleSeed | 0;
+        let h = (2166136261 ^ shuffleSeed) | 0;
         for (let i = 0; i < id.length; i++) {
-          h = (h * 31 + id.charCodeAt(i)) | 0;
+          h = Math.imul(h ^ id.charCodeAt(i), 16777619);
         }
-        return h;
+        h = Math.imul(h ^ (h >>> 16), 2246822507);
+        h = Math.imul(h ^ (h >>> 13), 3266489909);
+        return (h ^ (h >>> 16)) >>> 0;
       };
       list = [...list].sort((a, b) => keyFor(a.id) - keyFor(b.id));
     }
